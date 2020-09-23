@@ -23,12 +23,10 @@ using namespace std;
 class LockedFile {
   FILE* f;
   int fd;
-  bool error, existed, wmode;  // rwmode true=>write, false=>read
+  bool error;  // rwmode true=>write, false=>read
   public:
   bool haserror() { return error; }
-  LockedFile(const std::string filename, bool read = true, bool write = true);
+  LockedFile(const std::string filename);
   ~LockedFile();
   int WriteString(std::string content);
-  std::vector<std::string> ReadLines();
-
 };

@@ -13,7 +13,7 @@
 #include <utility>
 #include <assert.h>
 #include <exception>
-#include <string>     // std::string, std::to_string
+#include <string>
 using namespace XrdCl;
 XrdVERSIONINFO(XrdClGetPlugIn, ClientLogging);
 
@@ -29,30 +29,21 @@ private:
 	unsigned long long stopTime;
 	std::string loggingPath;
 	
-	
 public:
 
 	//Constructor
 	ClientLoggingFile(std::string x, std::string loggingPath):xfile(false), loggingPath(loggingPath), writtenSize(0), readSize(0){
-		std::cerr << "Logging to: " << loggingPath << std::endl;
-		std::cerr << "Creating PluginFile with path: " << x << std::endl;
 	}
 
 	//Destructor
 	~ClientLoggingFile() {
 		//Create the file to log in
 		LockedFile lFile(loggingPath+"/XrdClientLogging.log");
-		std::cerr << "Trying to write to logfile: " << std::endl;
-		if(readSize){
-  		//ofs << "r," << path << "," << readSize << "," << startTime << "," << stopTime << "," << stopTime - startTime << std::endl;
-			std::string message = "r, path";
-			lFile.WriteString(message);
-		}
-		else
-		{
-			std::string message = "w, path";
-			lFile.WriteString(message);
-		}
+		std::stringstream ss;
+		ss <<  (readSize? "r" : "w") << ","
+		 	<< path << "," <<  (readSize? readSize : writtenSize) << "," << startTime << "," << stopTime << "," 
+			<< stopTime - startTime << "\n" ;
+		lFile.WriteString(ss.str());
 		xfile.Close();
 	}
 

@@ -1,4 +1,4 @@
-#XrdOpenLocal 
+# XrdOpenLocal 
 An XRootD client plug-in to log bytes read and written by XRootD calls
 
 
@@ -23,7 +23,7 @@ To use the plug-in, you need to set:
 export XRD_DEFAULT_PLUGIN_CONF="/path/to/configDir/XrdClientLogging.conf"
 export XRD_PLUGINCONFDIR="/path/to/configDir"
 
-# Install and tests
+# Install:
 To compile the plug-in, you need to set the XRD_PATH environmental variable to the toplevel of your XRootD installation.
 
 You can compile the plug-in library with :

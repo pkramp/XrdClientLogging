@@ -20,8 +20,11 @@ enable = true
 
 Additionally, XRootD allows to set a client plug-in as default to use via the XRD_PLUGIN environmental variable.
 To use the plug-in, you need to set:
+
+```shell
 export XRD_DEFAULT_PLUGIN_CONF="/path/to/configDir/XrdClientLogging.conf"
 export XRD_PLUGINCONFDIR="/path/to/configDir"
+```
 
 # Install:
 To compile the plug-in, you need to set the XRD_PATH environmental variable to the toplevel of your XRootD installation.

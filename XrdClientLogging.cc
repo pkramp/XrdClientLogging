@@ -40,8 +40,8 @@ public:
 		//Create the file to log in
 		LockedFile lFile(loggingPath+"/XrdClientLogging.log");
 		std::stringstream ss;
-		ss <<  (readSize? "r" : "w") << ","
-		 	<< path << "," <<  (readSize? readSize : writtenSize) << "," << startTime << "," << stopTime << "," 
+		ss <<  (readSize? "r" : "w") << "," << path.substr(0,7) << "," << path << "," <<  
+		(readSize? readSize : writtenSize) << "," << startTime << "," << stopTime << "," 
 			<< stopTime - startTime << "\n" ;
 		lFile.WriteString(ss.str());
 		xfile.Close();

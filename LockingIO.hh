@@ -7,6 +7,7 @@ class LockedFile {
   FILE* f;
   int fd;
   bool error;
+
   public:
   bool haserror() { return error; }
   LockedFile(const std::string filename);

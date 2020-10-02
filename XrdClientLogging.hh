@@ -7,36 +7,28 @@
  ********************************************************************************/
 #ifndef __XRDCLIENT_LOGGING_PLUGIN_HH___
 #define __XRDCLIENT_LOGGING_PLUGIN_HH___
-#include <stdio.h>
-#include <string>
-#include <algorithm>
-#include <iostream>
 #include "XrdVersion.hh"
 #include "XrdCl/XrdClPlugInInterface.hh"
 #include "XrdCl/XrdClFile.hh"
 #include "XrdCl/XrdClFileSystem.hh"
-#include "XrdCl/XrdClUtils.hh"
-#include "XrdCl/XrdClLog.hh"
-#include "XrdCl/XrdClDefaultEnv.hh"
 #include "LockingIO.hh"
-#include <fstream>
-#include <ctime>
 #include <chrono>
+#include <string>
 
 
 namespace XrdClientLoggingFactory{
 //----------------------------------------------------------------------------
 // Plugin factory
 //----------------------------------------------------------------------------
-class XOLFactory : public XrdCl::PlugInFactory {
+class XCLFactory : public XrdCl::PlugInFactory {
 	public:
 		//------------------------------------------------------------------------
 		// Constructore
 		//------------------------------------------------------------------------
-		XOLFactory(const std::map<std::string, std::string> &config);
+		XCLFactory(const std::map<std::string, std::string> &config);
 		//------------------------------------------------------------------------
 		// Destructor
-		virtual ~XOLFactory();
+		virtual ~XCLFactory();
 
 		//------------------------------------------------------------------------
 		// Create a file plug-in for the given URL

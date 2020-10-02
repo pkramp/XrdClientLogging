@@ -1,5 +1,5 @@
 /********************************************************************************
- *    Copyright (C) 2014 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH    *
+ *    Copyright (C) 2020 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH    *
  *                                                                              *
  *              This software is distributed under the terms of the             * 
  *         GNU Lesser General Public Licence version 3 (LGPL) version 3,        *  
@@ -7,13 +7,6 @@
  ********************************************************************************/
 
 #include "XrdClientLogging.hh"
-#include <exception>
-#include <cstdlib>
-#include <string>
-#include <utility>
-#include <assert.h>
-#include <exception>
-#include <string>
 using namespace XrdCl;
 XrdVERSIONINFO(XrdClGetPlugIn, ClientLogging);
 
@@ -30,7 +23,6 @@ private:
 	std::string loggingPath;
 	
 public:
-
 	//Constructor
 	ClientLoggingFile(std::string x, std::string loggingPath):xfile(false), loggingPath(loggingPath), writtenSize(0), readSize(0){
 	}
@@ -108,23 +100,17 @@ public:
 };
 };
 namespace XrdClientLoggingFactory {
-XOLFactory::XOLFactory( const std::map<std::string, std::string> &config ) :
-	XrdCl::PlugInFactory() {
-	XrdCl::Log *log = DefaultEnv::GetLog();
-	log->Debug( 1, "XrdClientLoggingFactory::Constructor" );
-	if (config.find("loggingPath") != config.end()) {
-		loggingPath = config.at("loggingPath");
-	}
+XCLFactory::XCLFactory( const std::map<std::string, std::string> &config ) :
+	XrdCl::PlugInFactory(), loggingPath(config.at("loggingPath")) {
 }
 
-XOLFactory::~XOLFactory() {
-}
+XCLFactory::~XCLFactory() = default;
 
-XrdCl::FilePlugIn * XOLFactory::CreateFile( const std::string &url ) {
+XrdCl::FilePlugIn * XCLFactory::CreateFile( const std::string &url ) {
 	return static_cast<XrdCl::FilePlugIn *> (new ClientLogging::ClientLoggingFile(url, loggingPath)) ;
 }
 
-XrdCl::FileSystemPlugIn * XOLFactory::CreateFileSystem(const std::string &url) {
+XrdCl::FileSystemPlugIn * XCLFactory::CreateFileSystem(const std::string &url) {
 	return static_cast<XrdCl::FileSystemPlugIn *> (new ClientLogging::ClientLoggingFs(url)) ;
 
 }
@@ -132,7 +118,7 @@ XrdCl::FileSystemPlugIn * XOLFactory::CreateFileSystem(const std::string &url) {
 extern "C" {
 	void *XrdClGetPlugIn(const void *arg) {
 		const std::map<std::string, std::string> &pconfig = *static_cast <const std::map<std::string, std::string> *>(arg);
-		void * plugIn = new XrdClientLoggingFactory::XOLFactory(pconfig);
+		void * plugIn = new XrdClientLoggingFactory::XCLFactory(pconfig);
 		return plugIn;
 	}
 }

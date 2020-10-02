@@ -11,7 +11,7 @@ This plug-in is configured via a plug-in configuration file in /etc/xrootd/clien
 
 Example configuration to write to logfile:
 ```shell
-url = file://localhost/* 
+url = /*;root://*
 loggingPath = /path/to/logfile
 lib = /path/to/XrdClientLogging.so
 enable = true
@@ -22,7 +22,6 @@ Additionally, XRootD allows to set a client plug-in as default to use via the XR
 To use the plug-in, you need to set:
 
 ```shell
-export XRD_DEFAULT_PLUGIN_CONF="/path/to/configDir/XrdClientLogging.conf"
 export XRD_PLUGINCONFDIR="/path/to/configDir"
 ```
 

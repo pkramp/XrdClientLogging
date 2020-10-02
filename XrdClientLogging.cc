@@ -23,8 +23,8 @@ private:
 	///@file file for local access
 	XrdCl::File xfile{false};
 	std::string path;
-	int writtenSize;
-	int readSize;
+	uint32_t writtenSize;
+	uint32_t readSize;
 	unsigned long long startTime;
 	unsigned long long stopTime;
 	std::string loggingPath;
@@ -44,7 +44,6 @@ public:
 		(readSize? readSize : writtenSize) << "," << startTime << "," << stopTime << "," 
 			<< stopTime - startTime << "\n" ;
 		lFile.WriteString(ss.str());
-		xfile.Close();
 	}
 
 	//Open()
@@ -113,63 +112,13 @@ XOLFactory::XOLFactory( const std::map<std::string, std::string> &config ) :
 	XrdCl::PlugInFactory() {
 	XrdCl::Log *log = DefaultEnv::GetLog();
 	log->Debug( 1, "XrdClientLoggingFactory::Constructor" );
-
-	if (config.size() == 0) {
-        
-        log->Debug(1, "config size is zero... This is a \"default plug-in call\" "
-                      "-> loading default config file @ XRD_DEFAULT_PLUGIN_CONF "
-                      "Environment Variable ");
+	if (config.find("loggingPath") != config.end()) {
+		loggingPath = config.at("loggingPath");
 	}
-	std::map<std::string, std::string> defaultconfig;
-	loadDefaultConf(defaultconfig);
 }
 
 XOLFactory::~XOLFactory() {
 }
-
-void XOLFactory::loadDefaultConf(std::map<std::string, std::string>& config) {
-    XrdCl::Log* log = DefaultEnv::GetLog();
-    log->Debug(1, "XOLFactory::loadDefaultConf");
-    if (const char* env_p = std::getenv("XRD_DEFAULT_PLUGIN_CONF")) {
-        std::string confFile = env_p;
-        std::stringstream msg;
-        log->Debug(1, std::string("XRD_DEFAULT_PLUGIN_CONF file is: ").append(env_p).c_str());
-
-        Status st = XrdCl::Utils::ProcessConfig(config, confFile);
-        if (config.size() == 0)
-            throw std::runtime_error("XrdClientLogging cannot be loaded as the default "
-                                     "plugin since the config file does not seem to "
-                                     "have any content");
-        if (!st.IsOK()) {
-            return;
-        }
-
-        const char* keys[] = { "lib", "enable", "loggingPath", 0 };
-        for (int i = 0; keys[i]; ++i) {
-            if (config.find(keys[i]) == config.end()) {
-                return;
-            }
-        }
-
-        //--------------------------------------------------------------------------
-        // Attempt to load the plug-in config-file and place it into the config map
-        //--------------------------------------------------------------------------
-        std::string lib = config["lib"];
-        std::string enable = config["enable"];
-        loggingPath = config["loggingPath"];
-        if (enable == "false") {
-            throw std::runtime_error("XrdClientLogging cannot be loaded as the default "
-                                     "plugin, since \"enable\" is set to \"false\" "
-                                     "in the file located at "
-                                     "XRD_DEFAULT_PLUGIN__CONF");
-        }
-    	} else {
-        	throw std::runtime_error("XrdClientLogging cannot be loaded as the default "
-                                 "plugin, since XRD_DEFAULT_PLUGIN_CONF is not set "
-                                 "in the environment");
-    	}
-}
-
 
 XrdCl::FilePlugIn * XOLFactory::CreateFile( const std::string &url ) {
 	return static_cast<XrdCl::FilePlugIn *> (new ClientLogging::ClientLoggingFile(url, loggingPath)) ;

@@ -37,7 +37,9 @@ class ClientLoggingFile : public XrdCl::FilePlugIn, public XrdCl::File {
     // Create the file to log in
     LockedFile lFile(loggingPath + "/XrdClientLogging.log");
     std::stringstream ss;
-    ss << (readSize ? "r" : "w") << "," << path.substr(0, 7) << "," << path
+    std::string url1;
+    XrdCl::File::GetProperty( "LastURL", url1 );
+    ss << (readSize ? "r" : "w") << "," << url1.substr(0, 7) << "," << path
        << "," << (readSize ? readSize : writtenSize) << "," << startTime << ","
        << stopTime << "," << stopTime - startTime << "\n";
     lFile.WriteString(ss.str());
@@ -52,9 +54,8 @@ class ClientLoggingFile : public XrdCl::FilePlugIn, public XrdCl::File {
     startTime =
 	duration_cast<milliseconds>(system_clock::now().time_since_epoch())
 	    .count();
-
-    return static_cast<XrdCl::File *>(this)->Open(url, flags, mode, handler,
-						  timeout);  // call base
+    return XrdCl::File::Open(url, flags, mode, handler,
+						  timeout);
   }
 
   virtual XRootDStatus Close(ResponseHandler *handler, uint16_t timeout)
@@ -63,7 +64,7 @@ class ClientLoggingFile : public XrdCl::FilePlugIn, public XrdCl::File {
     stopTime =
 	duration_cast<milliseconds>(system_clock::now().time_since_epoch())
 	    .count();
-    return static_cast<XrdCl::File *>(this)->Close(handler,
+    return XrdCl::File::Close(handler,
 						   timeout);  // call base
   }
 
@@ -71,7 +72,7 @@ class ClientLoggingFile : public XrdCl::FilePlugIn, public XrdCl::File {
 			    XrdCl::ResponseHandler *handler, uint16_t timeout)
   {
     readSize += length;
-    return static_cast<XrdCl::File *>(this)->Read(offset, length, buffer,
+    return XrdCl::File::Read(offset, length, buffer,
 						  handler,
 						  timeout);  // call base
   }
@@ -80,9 +81,18 @@ class ClientLoggingFile : public XrdCl::FilePlugIn, public XrdCl::File {
 			     ResponseHandler *handler, uint16_t timeout = 0)
   {
     writtenSize += size;
-    return static_cast<XrdCl::File *>(this)->Write(
+    return XrdCl::File::Write(
 	offset, size, buffer, handler, timeout);  // call base
   }
+  
+  
+  virtual bool IsOpen()  const    {
+  return XrdCl::File::IsOpen();
+}
+virtual XRootDStatus Stat(bool force,ResponseHandler *handler,uint16_t timeout) {	
+  return XrdCl::File::Stat(force,handler,timeout);
+}
+
 };
 class ClientLoggingFs : public XrdCl::FileSystemPlugIn {
   private:

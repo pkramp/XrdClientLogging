@@ -1,5 +1,5 @@
 /********************************************************************************
- *    Copyright (C) 2020 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH *
+ *    Copyright (C) 2021 GSI Helmholtzzentrum fuer Schwerionenforschung GmbH *
  *                                                                              *
  *              This software is distributed under the terms of the * GNU Lesser
  *General Public Licence version 3 (LGPL) version 3,        * copied verbatim in
@@ -13,6 +13,7 @@
 #include "XrdCl/XrdClFile.hh"
 #include "XrdCl/XrdClFileSystem.hh"
 #include "XrdCl/XrdClPlugInInterface.hh"
+#include "XrdCl/XrdClDefaultEnv.hh"
 #include "XrdVersion.hh"
 
 namespace XrdClientLoggingFactory {
@@ -44,6 +45,6 @@ class XCLFactory : public XrdCl::PlugInFactory {
   private:
   std::string loggingPath;
 };
-};  // namespace XrdClientLoggingFactory
+};
 
 #endif  // __XRDCLIENT_LOGGING_PLUGIN_HH___
